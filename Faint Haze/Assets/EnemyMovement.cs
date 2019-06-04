@@ -100,9 +100,11 @@ public class EnemyMovement : PhysicsObject
 
                 if ((playerSpottedDown == true) || (playerSpottedMiddle == true) || (playerSpottedUp == true))
                 {
-                    //Debug.Log("Start Kill Player Animation");
-                    //ammazza il player
-
+                    if(player.stealth_status==Haze.Visibility.Visible || player.stealth_status == Haze.Visibility.Caution)
+                    {
+                        //Debug.Log("Start Kill Player Animation");
+                        //ammazza il player
+                    }
                 }
                 break;
 

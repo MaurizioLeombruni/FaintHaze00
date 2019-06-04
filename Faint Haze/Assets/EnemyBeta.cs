@@ -39,11 +39,19 @@ public class EnemyBeta : MonoBehaviour
 
     private void OnTriggerStay2D(Collider2D collision)
     {
-        if (watching)
+        if (collision.GetComponent<Haze>())
         {
-            Debug.Log("Haze è stato visto ed adesso è morto.");
-            Time.timeScale = 0;
+            if (watching)
+            {
+                if(collision.GetComponent<Haze>().stealth_status == Haze.Visibility.Visible || collision.GetComponent<Haze>().stealth_status == Haze.Visibility.Caution)
+                {
+                    Debug.Log("Haze è stato visto ed adesso è morto.");
+                    Time.timeScale = 0;
+                }
+
+            }
         }
+
     }
 
 }

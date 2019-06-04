@@ -26,10 +26,13 @@ public class PhysicsObject : MonoBehaviour
 
     protected const float shellRadius = 0.01f;
 
+    private Collider2D x;
+
 
     void OnEnable()
     {
         rb2d = GetComponent<Rigidbody2D>();
+        x = GetComponent<BoxCollider2D>();
     }
 
     void Start()
@@ -43,7 +46,7 @@ public class PhysicsObject : MonoBehaviour
     void Update()
     {
         targetVelocity = Vector2.zero;
-        //ComputeVelocity();
+        ComputeVelocity();
     }
 
     protected virtual void ComputeVelocity()
@@ -53,7 +56,7 @@ public class PhysicsObject : MonoBehaviour
     void FixedUpdate()
     {
 
-        ComputeVelocity();
+        //ComputeVelocity();
         velocity += gravityModifier * Physics2D.gravity * Time.deltaTime;
 
         velocity.x = targetVelocity.x;
