@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Haze : PhysicsObject
+public class Haze : MonoBehaviour
 {
     //Parametri di base del personaggio.
     public float speed;
     private float speed_aux;
     public float jump_force;
+    private Rigidbody2D rb2d;
+    public ContactFilter2D contactFilter;
+    private Vector2 velocity;
 
     //Valori di stato del personaggio, usati per la detezione da parte dei nemici.
     //Lo stato Visible è quando il personaggio è pienamente visibile; Caution è per quando è solo parzialmente visibile (intangibile dentro
@@ -23,6 +26,8 @@ public class Haze : PhysicsObject
     //Parametri di supporto per le funzionalità base del personaggio, come il movimento.
     protected Vector2 move_save;
     protected float hookshot_position;
+    public Transform groundCheckPos;
+    public float circleRadius;
 
     //Parametri di controllo per l'aspetto grafico del personaggio.
     public SpriteRenderer sprite;
@@ -47,6 +52,7 @@ public class Haze : PhysicsObject
     public bool isClimbing;
     public bool isIntangible;
     public bool isStunned;
+    public bool isGrounded;
     private bool flipSprite;
 
     //Parametri della Skill 1 (Intangibilità).
@@ -168,18 +174,19 @@ public class Haze : PhysicsObject
 
         //Riabilita il movimento del personaggio e gli restituisce la fisica personalizzata.
         canMove = true;
-        rb2d.bodyType = RigidbodyType2D.Kinematic;
+        //rb2d.bodyType = RigidbodyType2D.Kinematic;
     }
 
     IEnumerator ActiveHookshot()
     {
         //Questa coroutine gestisce la funzione del rampino.
         //Per prima cosa azzera completamente la velocità del personaggio, per evitare eventuali bug dovuti alla fisica personalizzata e al movimento.
+        isGrounded = false;
         move_save = Vector2.zero;
 
         //Verifica se c'è un contrasto tra la direzione del personaggio e quella del punto d'appiglio. Se le due non coincidono, il personaggio viene
         //fatto ruotare nella stessa direzione del punto d'appiglio. Ciò crea un effetto visivo più coerente.
-        if(hs_direct==Direction.Right && direct==Direction.Left)
+        if (hs_direct==Direction.Right && direct==Direction.Left)
         {
             direct = Direction.Right;
             sprite.flipX = !sprite.flipX;
@@ -191,10 +198,10 @@ public class Haze : PhysicsObject
         }
 
         //Una volta corretto (se necessario) la direzione del personaggio, si disabilita il movimento del personaggio.
-        canMove = false;
+       
 
         //Al personaggio viene data una velocità puramente verticale.
-        rb2d.velocity = new Vector2(0, hookshot_speed);
+        rb2d.velocity = new Vector2(rb2d.velocity.x, hookshot_speed);
 
         //Aspetta fin quando il personaggio non raggiunge l'altezza designata.
 
@@ -226,16 +233,25 @@ public class Haze : PhysicsObject
         //Una funzione puramente di debug che serve a controllare la funzione del rampino.
         Gizmos.color = Color.yellow;
         Gizmos.DrawLine(transform.position, transform.position + new Vector3(0, 10, 0));
+
+        Gizmos.DrawWireSphere(groundCheckPos.position, circleRadius);
     }
 
     public bool GroundedCheck()
     {
         //Una funzione puramente di supporto che controlla se il personaggio è a terra o meno.
 
-        if (grounded)
+        if (isGrounded)
             return true;
         else
             return false;
+    }
+
+    public void GroundControl()
+    {
+        isGrounded = Physics2D.OverlapCircle(groundCheckPos.position, circleRadius, 1 << LayerMask.NameToLayer("Ground"));
+
+
     }
 
     /*public bool HeightCompare(Vector3 first, Vector3 second)
@@ -265,6 +281,7 @@ public class Haze : PhysicsObject
     private void Awake()
     {
         haze_anim = GetComponent<Animator>();
+        rb2d = GetComponent<Rigidbody2D>();
     }
 
     private void Start()
@@ -273,7 +290,6 @@ public class Haze : PhysicsObject
 
         speed = 5;
         speed_aux = speed;
-        jump_force = 0.0008f;
 
         canUseSkill01 = true;
         canUseSkill02 = true;
@@ -284,20 +300,19 @@ public class Haze : PhysicsObject
         sprite = GetComponent<SpriteRenderer>();
     }
 
-    protected override void ComputeVelocity()                                                  
+    private void FixedUpdate()                                                  
     {
-        //La funzione ComputeVelocity è una versione personalizzata della funzione FixedUpdate, che viene richiamata per ogni frame.
-
-        //Inizializza il movimento a zero. Dopodiché il gioco prende la direzione del movimento secondo l'input del giocatore.
-        Vector2 move = Vector2.zero;
-        move.x = Input.GetAxis("Horizontal");
+        //Controlla, ogni frame, se è il personaggio è a terra o meno.
+        GroundControl();
 
         //Controlla se il personaggio può muoversì. Se può, questa funzione entra in azione e gestisce il movimento standard.
-        if (canMove)
+        if (isGrounded)
         {
             //Stabilisce la velocità calcolandola secondo la direzione presa in input e la velocità del personaggio.
             //Inoltre salva la direzione in una variabile ausiliaria.
-            targetVelocity = move * speed;
+            Vector2 move = Vector2.zero;
+            move.x = Input.GetAxisRaw("Horizontal");
+            rb2d.velocity = new Vector2(move.x * speed, 0);
             speed = speed_aux;
             move_save = move;
 
@@ -314,40 +329,37 @@ public class Haze : PhysicsObject
             }
 
         }
-        else
-            targetVelocity = move_save * speed;
-
-        //Per sopra: la seconda targetVelocity viene usata durante il salto: quando il personaggio non può muoversi ma ha comunque una velocità,
+     //Per sopra: la seconda targetVelocity viene usata durante il salto: quando il personaggio non può muoversi ma ha comunque una velocità,
         //continua nel suo moto senza aver bisogno dell'input del giocatore.
 
 
         //Il salto. Per saltare controlla che il personaggio sia a terra e non sia stordito. In input prende il pulsante del salto.
-        if (Input.GetButtonDown("Jump") && grounded && !isStunned)
+        if (Input.GetButtonDown("Jump") && isGrounded && !isStunned)
         {
-            //Cambia il Rigidbody2D. Aiuta ad evitare alcuni bug della fisica personalizzata.
-            rb2d.bodyType = RigidbodyType2D.Dynamic;
+            Debug.Log("Jumping");
 
+            StartCoroutine("JumpDirection");
             //Il salto varia in base al fatto se il personaggio si sia muovendo o meno.
             if (rb2d.velocity != Vector2.zero)
             {
                 //Se si sta muovendo, il salto viene calcolato in base alla direzione e la forza del salto.
-                rb2d.AddForce(move * jump_force, ForceMode2D.Impulse);
+                rb2d.velocity = ((Vector2.up + move_save) * jump_force * Time.fixedDeltaTime);
 
             }
             else
             {
                 //Altrimenti, il salto viene calcolato in base alla sola forza del salto, con direzione standard in sù.
-                rb2d.AddForce(Vector2.up * jump_force, ForceMode2D.Impulse);
+                rb2d.velocity = (Vector2.up * jump_force * Time.fixedDeltaTime);
+                // rb2d.AddForce(Vector2.up * jump_force, ForceMode2D.Impulse);
             }
 
             //Fa partire la coroutine che gestisce il movimento durante il salto.
-            StartCoroutine("JumpDirection");
         }
 
 
        
         //Il rampino. Per essere usato controlla se il personaggio sia a terra e non sia stordito. Prende in input il pulsante specificato.
-        if (Input.GetKeyDown(KeyCode.B) && grounded && !isStunned && !isCrouched)
+        if (Input.GetKeyDown(KeyCode.B) && isGrounded && !isStunned && !isCrouched)
         {
             //Quando azionato, controlla se effettivamente c'è qualcosa che possa essere usato nella funzione. Il rampino parte solo e unicamente
             //quando c'è un elemento sopra il personaggio che ne permette l'uso.
@@ -411,7 +423,7 @@ public class Haze : PhysicsObject
         //Il crouching.
         //Se il personaggio può muoversi normalmente, alla pressione del pulsante specificato verifica se il personaggio sia già abbassato.
         //In base allo stato del personaggio, cambia il collider e lo stato di crouching del personaggio.
-        if (Input.GetKeyDown(KeyCode.Q) && grounded == true && canMove == true && isCrouched == false)
+        if (Input.GetKeyDown(KeyCode.Q) && isGrounded == true && canMove == true && isCrouched == false)
         {
             Debug.Log("Crouch");
 
@@ -424,7 +436,7 @@ public class Haze : PhysicsObject
             haze_anim.SetBool("isCrouching_anim", true);
 
         }
-        else if (Input.GetKeyDown(KeyCode.Q) && grounded == true && canMove == true && isCrouched == true)
+        else if (Input.GetKeyDown(KeyCode.Q) && isGrounded == true && canMove == true && isCrouched == true)
         {
             Debug.Log("Crouch");
             speed = speed * 2;
@@ -437,9 +449,20 @@ public class Haze : PhysicsObject
         }
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+   /* private void OnCollisionEnter2D(Collision2D collision)
     {
-        Debug.Log(collision);
+        if (collision.gameObject.tag == ("floor"))
+        {
+            isGrounded = true;
+        }
     }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == ("floor"))
+        {
+            isGrounded = false;
+        }
+    }*/
 
 }
