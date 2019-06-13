@@ -6,6 +6,7 @@ public class PheromoneBottleBaseScript : MonoBehaviour
 {
     public GameObject innerCollider;
     public GameObject outerCollider;
+    public GameObject smokeBase;
     private Rigidbody2D rb2d;
     private Haze player;
     public float speed;
@@ -69,16 +70,20 @@ public class PheromoneBottleBaseScript : MonoBehaviour
     {
         innerCollider.SetActive(true);
         outerCollider.SetActive(true);
+       
+        smokeBase.SetActive(true);
         yield return new WaitForSeconds(10);
-        enemyScript = GameObject.FindGameObjectWithTag("Enemy").GetComponent<EnemyMovement>();
-
-
-        /*if (EnemyScript.ActiveStatus == EnemyMovement.Status.Stordito)
+        if (GameObject.FindGameObjectWithTag("Enemy"))
         {
-            EnemyScript.ActiveStatus = EnemyMovement.Status.Ritorno;
-        }*/
+            enemyScript = GameObject.FindGameObjectWithTag("Enemy").GetComponent<EnemyMovement>();
 
 
+            if (enemyScript.ActiveStatus == EnemyMovement.Status.Stordito)
+            {
+                enemyScript.ActiveStatus = EnemyMovement.Status.Ritorno;
+            }
+        }
+        Debug.Log("ok");
         Destroy(gameObject);
     }
 

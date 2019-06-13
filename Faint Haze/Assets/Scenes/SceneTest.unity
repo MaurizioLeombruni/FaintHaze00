@@ -932,6 +932,42 @@ PrefabInstance:
       propertyPath: m_SortingOrder
       value: 5
       objectReference: {fileID: 0}
+    - target: {fileID: 8592361552948424163, guid: 620ed0208ef88a741aa735db39009190,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 5841ad2d1e6dc1c47b1a4cdc24d06ca3,
+        type: 3}
+    - target: {fileID: 8592361552948424163, guid: 620ed0208ef88a741aa735db39009190,
+        type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8592361552948424163, guid: 620ed0208ef88a741aa735db39009190,
+        type: 3}
+      propertyPath: m_Size.x
+      value: 0.54
+      objectReference: {fileID: 0}
+    - target: {fileID: 8592361552948424163, guid: 620ed0208ef88a741aa735db39009190,
+        type: 3}
+      propertyPath: m_Size.y
+      value: 0.64
+      objectReference: {fileID: 0}
+    - target: {fileID: 8592361552948424173, guid: 620ed0208ef88a741aa735db39009190,
+        type: 3}
+      propertyPath: m_SpriteTilingProperty.newSize.x
+      value: 0.46
+      objectReference: {fileID: 0}
+    - target: {fileID: 8592361552948424173, guid: 620ed0208ef88a741aa735db39009190,
+        type: 3}
+      propertyPath: m_SpriteTilingProperty.newSize.y
+      value: 0.38
+      objectReference: {fileID: 0}
+    - target: {fileID: 3464844071590890109, guid: 620ed0208ef88a741aa735db39009190,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 620ed0208ef88a741aa735db39009190, type: 3}
 --- !u!1 &264024977
@@ -2040,7 +2076,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1079151902}
   - component: {fileID: 1079151904}
-  - component: {fileID: 1079151903}
   m_Layer: 15
   m_Name: 05202019_tile_metallo_con_piante_pezzo_centrale_estendibile_altezza_1_00MS
     (1)
@@ -2063,32 +2098,6 @@ Transform:
   m_Father: {fileID: 349100463}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!61 &1079151903
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1079151901}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: -0.10988656}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.64, y: 0.64}
-    newSize: {x: 0.64, y: 0.64}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 0.64, y: 0.42022687}
-  m_EdgeRadius: 0
 --- !u!212 &1079151904
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -2306,7 +2315,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1325197502}
   - component: {fileID: 1325197504}
-  - component: {fileID: 1325197503}
   m_Layer: 15
   m_Name: 05202019_tile_metallo_con_piante_pezzo_centrale_estendibile_altezza_1_00MS
   m_TagString: floor
@@ -2328,32 +2336,6 @@ Transform:
   m_Father: {fileID: 349100463}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!61 &1325197503
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1325197501}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: -0.10988656}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.64, y: 0.64}
-    newSize: {x: 0.64, y: 0.64}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 0.64, y: 0.42022687}
-  m_EdgeRadius: 0
 --- !u!212 &1325197504
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -2712,7 +2694,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: -0.1071395}
+  m_Offset: {x: 0.9523524, y: -0.1071395}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -2723,7 +2705,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.64, y: 0.425721}
+  m_Size: {x: 2.5447047, y: 0.425721}
   m_EdgeRadius: 0
 --- !u!212 &1706224271
 SpriteRenderer:
@@ -3264,7 +3246,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2061928768}
   - component: {fileID: 2061928770}
-  - component: {fileID: 2061928769}
   m_Layer: 15
   m_Name: 05202019_tile_metallo_con_piante_angolo_dx_altezza_1_00MS
   m_TagString: floor
@@ -3286,32 +3267,6 @@ Transform:
   m_Father: {fileID: 349100463}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!61 &2061928769
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2061928767}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: -0.05653158, y: -0.10988656}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.64, y: 0.64}
-    newSize: {x: 0.64, y: 0.64}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 0.5269368, y: 0.42022687}
-  m_EdgeRadius: 0
 --- !u!212 &2061928770
 SpriteRenderer:
   m_ObjectHideFlags: 0

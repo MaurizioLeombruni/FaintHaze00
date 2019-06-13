@@ -39,6 +39,8 @@ public class Haze : MonoBehaviour
 
     public Animator haze_anim;
 
+    private float velocity_ctrl;
+
     //Parametri di controllo per vedere se il personaggio può compiere l'azione specificata.
     public bool canUseSkill01;
     public bool canUseSkill02;
@@ -223,7 +225,7 @@ public class Haze : MonoBehaviour
 
     public void Death()
     {
-        //anim.SetTrigger("Death");
+        haze_anim.SetTrigger("death_anim");
         Time.timeScale = 0;
         //gameOverPanel.SetActive(true);
     }
@@ -315,6 +317,7 @@ public class Haze : MonoBehaviour
             rb2d.velocity = new Vector2(move.x * speed, 0);
             speed = speed_aux;
             move_save = move;
+            haze_anim.SetFloat("velocity_anim", Mathf.Abs(rb2d.velocity.x));
 
             //Gira il personaggio quando cambia direzione.
             flipSprite = (sprite.flipX ? (move.x > 0.01f) : (move.x < -0.01f));
