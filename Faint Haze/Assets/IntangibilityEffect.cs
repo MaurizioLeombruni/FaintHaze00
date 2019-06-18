@@ -7,34 +7,18 @@ public class IntangibilityEffect : MonoBehaviour
     //Il seguente script altera l'aspetto dell'oggetto in cui si nasconde il personaggio, aggiungendo trasparenza? al fine di
     //far vedere la posizione esatta al suo interno.
 
-    public GameObject intangibility_object;
+    public GameObject intangibility_filter;
 
     public enum Height { Full, Half }
     public Height object_height;
 
-    public Material mat_intangible;
-    private Material mat_original;
-
-    private void Awake()
-    {
-        mat_original = intangibility_object.GetComponent<MeshRenderer>().material;
-    }
-
-    public void ChangeVision()
-    {
-        intangibility_object.GetComponent<MeshRenderer>().material = mat_intangible;
-    }
-
-    public void ChangeBack()
-    {
-        intangibility_object.GetComponent<MeshRenderer>().material = mat_original;
-    }
 
     public virtual void PushAway(GameObject target)
     {
+        
 
         Debug.Log("PUSH!");
-        if (target.GetComponent<BoxCollider2D>().bounds.center.x < intangibility_object.GetComponent<BoxCollider2D>().bounds.center.x)
+        if (target.GetComponent<BoxCollider2D>().bounds.center.x < gameObject.GetComponent<BoxCollider2D>().bounds.center.x)
         {
             target.transform.position = Vector2.Lerp(target.transform.position, target.transform.position + new Vector3(-3, 0, 0), 0.75f);
         }
@@ -50,7 +34,8 @@ public class IntangibilityEffect : MonoBehaviour
         {
             if (collision.GetComponent<Haze>().isIntangible == true)
             {
-                ChangeVision();
+                intangibility_filter.SetActive(true);
+
                 collision.GetComponent<Haze>().isStuck = true;
                 if (object_height == Height.Full)
                 {
@@ -79,7 +64,8 @@ public class IntangibilityEffect : MonoBehaviour
 
             if (collision.GetComponent<Haze>().isIntangible == true && collision.GetComponent<Haze>().isStuck == false)
             {
-                ChangeVision();
+                intangibility_filter.SetActive(true);
+
                 collision.GetComponent<Haze>().isStuck = true;
                 if (object_height == Height.Full)
                 {
@@ -97,7 +83,8 @@ public class IntangibilityEffect : MonoBehaviour
     {
         if (collision.tag == "Player")
         {
-            ChangeBack();
+            intangibility_filter.SetActive(false);
+
             collision.GetComponent<Haze>().isStuck = false;
             collision.GetComponent<Haze>().stealth_status = Haze.Visibility.Visible;
         }

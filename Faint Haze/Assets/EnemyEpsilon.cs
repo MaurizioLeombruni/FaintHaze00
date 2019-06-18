@@ -8,6 +8,12 @@ public class EnemyEpsilon : MonoBehaviour
     //all'effetto di un'interazione ambientale.
     private CircleCollider2D detection;
 
+    //Variabili di controllo per l'aspetto grafico & di animazione del nemico.
+    public GameObject circle_normal;
+    public GameObject circle_small;
+
+    public Animator epsilon_anim;
+
     //Valori numeri utilizzati nella modifica del raggio di detezione.
     public float radius_initial;
     public float radius_modified;
@@ -20,21 +26,32 @@ public class EnemyEpsilon : MonoBehaviour
         detection = GetComponent<CircleCollider2D>();
     }
 
+    //Setta i valori iniziali del nemico.
+
     private void Start()
     {
         radius_initial = 1.67f;
         radius_modified = 1.0f;
-
-        reduction_duration = 5.0f;
     }
 
     IEnumerator ReduceDetection()
     {
+        //Modifica il raggio di detenzione del nemico secondo i valori specificati. Dopodiché modifica appositamente l'aspetto grafico.
         detection.radius = radius_modified;
+
+        circle_normal.SetActive(false);
+        circle_small.SetActive(true);
+
+        epsilon_anim.SetTrigger("reduce_anim");
 
         yield return new WaitForSeconds(reduction_duration);
 
         detection.radius = radius_initial;
+
+        circle_normal.SetActive(true);
+        circle_small.SetActive(false);
+
+        epsilon_anim.SetTrigger("cease_anim");
     }
 
 }

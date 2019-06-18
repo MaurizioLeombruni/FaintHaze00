@@ -44,25 +44,6 @@ public class PheromoneBottleBaseScript : MonoBehaviour
     }
 
 
-    //Una volta che collide con il pavimento viene resa immobile
-
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        
-        if (collision.tag == "floor")
-        {
-            
-            
-            activePheromones = true;
-            rb2d.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezePositionY ;
-
-            StartCoroutine("PheromonesActiveColliders");
-
-            
-           
-
-        }
-    }
 
     //Rimane Attivo per tot secondi, dopo cui viene distrutto. Quando viene distrutto, cambia lo status dei nemici con lo status "Stordito" in "Ritorno".
 
@@ -88,9 +69,21 @@ public class PheromoneBottleBaseScript : MonoBehaviour
     }
 
 
+    //Una volta che collide con il pavimento viene resa immobile
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "floor")
+        {
 
 
+            activePheromones = true;
+            rb2d.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezePositionY;
 
+            StartCoroutine("PheromonesActiveColliders");
+
+        }
+    }
 
 
 }

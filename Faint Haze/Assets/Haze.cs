@@ -253,7 +253,10 @@ public class Haze : MonoBehaviour
     {
         isGrounded = Physics2D.OverlapCircle(groundCheckPos.position, circleRadius, 1 << LayerMask.NameToLayer("Ground"));
 
-
+        if (isGrounded)
+            haze_anim.SetBool("falling_anim", false);
+        else
+            haze_anim.SetBool("falling_anim", true);
     }
 
     /*public bool HeightCompare(Vector3 first, Vector3 second)
@@ -346,14 +349,15 @@ public class Haze : MonoBehaviour
             if (rb2d.velocity != Vector2.zero)
             {
                 //Se si sta muovendo, il salto viene calcolato in base alla direzione e la forza del salto.
+                haze_anim.SetTrigger("jump_anim");
                 rb2d.velocity = ((Vector2.up + move_save) * jump_force * Time.fixedDeltaTime);
 
             }
             else
             {
                 //Altrimenti, il salto viene calcolato in base alla sola forza del salto, con direzione standard in sù.
+                haze_anim.SetTrigger("jump_anim");
                 rb2d.velocity = (Vector2.up * jump_force * Time.fixedDeltaTime);
-                // rb2d.AddForce(Vector2.up * jump_force, ForceMode2D.Impulse);
             }
 
             //Fa partire la coroutine che gestisce il movimento durante il salto.
@@ -377,13 +381,13 @@ public class Haze : MonoBehaviour
                 //del rampino. Altrimenti, se è un vespaio (interazione ambientale), fa partire lo script dell'interazione.
                 if (rc_hookshot_hit.collider.gameObject.tag == "hookshot_point_right")
                 {
-                    hs_direct = Direction.Right;
+                    hs_direct = Direction.Left;
                     StartCoroutine("ActiveHookshot");
                 }
 
                 else if (rc_hookshot_hit.collider.gameObject.tag == "hookshot_point_left")
                 {
-                    hs_direct = Direction.Left;
+                    hs_direct = Direction.Right;
                     StartCoroutine("ActiveHookshot");
                 }
 

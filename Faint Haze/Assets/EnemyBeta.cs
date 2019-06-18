@@ -17,14 +17,13 @@ public class EnemyBeta : MonoBehaviour
     {
         while (true)
         {
-            yield return new WaitForSeconds(sleep_duration);
-
-            watching = true;
-            Debug.Log("Beta è sveglio");
-
             yield return new WaitForSeconds(wake_duration);
             watching = false;
             Debug.Log("Beta va a dormire");
+
+            yield return new WaitForSeconds(sleep_duration);
+            watching = true;
+            Debug.Log("Beta è sveglio");
         }
         
     }
@@ -32,7 +31,7 @@ public class EnemyBeta : MonoBehaviour
     private void Start()
     {
         sleep_duration = 5;
-        wake_duration = 3;
+        wake_duration = 4;
         watching = false;
         StartCoroutine("Sveglia");
     }

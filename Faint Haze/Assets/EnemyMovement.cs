@@ -9,6 +9,8 @@ public class EnemyMovement : PhysicsObject
     public Collider2D limiteDestro;
     public Collider2D limiteSinistro;
 
+    public Animator alphaAnimator;
+
     public bool facingRight = true;                             
     public bool isFlipping = false;
     public bool playerSpottedMiddle = false;
@@ -30,6 +32,7 @@ public class EnemyMovement : PhysicsObject
     public enum Status {Ronda, Attratto, Stordito, Ritorno};
     public Status ActiveStatus;
     public Vector2 pheromonePosition;
+    public GameObject visionCone;
 
     public Transform returnPointPosition;
 
@@ -60,9 +63,10 @@ public class EnemyMovement : PhysicsObject
         {
             case Status.Ronda:                         //Status di movimento base, Comincia in questo status
 
-
+                Physics2D.IgnoreLayerCollision(11, 12, false);
                 limiteDestro.enabled = true;
                 limiteSinistro.enabled = true;
+
 
 
                 if (facingRight == true)
@@ -97,13 +101,14 @@ public class EnemyMovement : PhysicsObject
                 playerSpottedUp = Physics2D.Linecast(startRayCastUp.position, endRayCastUp.position, 1 << LayerMask.NameToLayer("Player"));
                 playerSpottedDown = Physics2D.Linecast(startRayCastDown.position, endRayCastDown.position, 1 << LayerMask.NameToLayer("Player"));
 
+                visionCone.SetActive(true);
 
                 if ((playerSpottedDown == true) || (playerSpottedMiddle == true) || (playerSpottedUp == true))
                 {
                     if(player.stealth_status==Haze.Visibility.Visible || player.stealth_status == Haze.Visibility.Caution)
                     {
-                        //Debug.Log("Start Kill Player Animation");
-                        //ammazza il player
+                        Debug.Log("Haze è stato visto ed adesso è morto.");
+                        Time.timeScale = 0;
                     }
                 }
                 break;
@@ -113,9 +118,11 @@ public class EnemyMovement : PhysicsObject
 
                 CheckRotation(pheromonePosition.x);
 
+                alphaAnimator.SetBool("distracted_status", true);
                 limiteDestro.enabled = false;
                 limiteSinistro.enabled = false;
-                //Physics2D.IgnoreLayerCollision(10, 12,true);                   //Disattiva la collisione con i limiti della sua ronda
+                visionCone.SetActive(false);
+                Physics2D.IgnoreLayerCollision(11, 12,true);                   //Disattiva la collisione con i limiti della sua ronda
 
 
                 transform.position = Vector2.MoveTowards(transform.position, new Vector3( pheromonePosition.x, transform.position.y, transform.position.z),speedWithPheromones*Time.deltaTime);     //Il tempo che ci mette a raggiungere il punto centrale dei feromoni.     
@@ -124,8 +131,8 @@ public class EnemyMovement : PhysicsObject
                 break;
             case Status.Stordito:                                           //Status che si attiva quando raggiunge il Collider Interno dei feromoni
 
-                
-
+                alphaAnimator.speed = 0;
+                visionCone.SetActive(false);
                 rb2d.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezePositionY;
 
                 
@@ -135,15 +142,17 @@ public class EnemyMovement : PhysicsObject
             case Status.Ritorno:
 
                 CheckRotation(returnPointPosition.position.x);
+                alphaAnimator.speed = 1;
+                alphaAnimator.SetBool("distracted_status", false);
 
                 //RitornoCoroutine();
                 rb2d.constraints = RigidbodyConstraints2D.None;
 
                 transform.position = Vector2.MoveTowards(transform.position, returnPointPosition.position, 2 * Time.deltaTime);         //Ritorna verso il ReturnPoint (Un punto idealmente al centra della ronda del singolo nemico)
 
-                
-                //Riparte il cono di visione
 
+                //Riparte il cono di visione
+                visionCone.SetActive(true);
                 Debug.DrawLine(startRayCastMiddle.position, endRayCastMiddle.position, Color.green);
 
 
@@ -160,7 +169,7 @@ public class EnemyMovement : PhysicsObject
                 playerSpottedDown = Physics2D.Linecast(startRayCastDown.position, endRayCastDown.position, 1 << LayerMask.NameToLayer("Player"));
 
 
-                Physics2D.IgnoreLayerCollision(10, 12, false);
+                
 
                
 
@@ -218,9 +227,10 @@ public class EnemyMovement : PhysicsObject
 
         rb2d.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezePositionY;
 
-
+        alphaAnimator.speed = 0;
         yield return new WaitForSeconds(3);
         rb2d.constraints = RigidbodyConstraints2D.None;
+        alphaAnimator.speed = 1;
 
         facingRight = true;
         transform.rotation = rightRotation;
@@ -231,8 +241,10 @@ public class EnemyMovement : PhysicsObject
     {
 
         rb2d.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezePositionY;
+        alphaAnimator.speed = 0;
         yield return new WaitForSeconds(3);
         rb2d.constraints = RigidbodyConstraints2D.None;
+        alphaAnimator.speed = 1;
 
         facingRight = false;
         transform.rotation = leftRotation;
